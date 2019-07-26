@@ -470,6 +470,10 @@ void processor_t::set_csr(int which, reg_t val)
       dirty_fp_state;
       state.frm = val & (FSR_RD >> FSR_RD_SHIFT);
       break;
+    case CSR_QBIT:
+      dirty_fp_state;
+      state.qbit = val;
+      break;
     case CSR_FCSR:
       dirty_fp_state;
       state.fflags = (val & FSR_AEXC) >> FSR_AEXC_SHIFT;
