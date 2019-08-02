@@ -113,8 +113,11 @@ riscv_insn_ext_i = \
 	xori \
 	fence \
 	fence_i \
-	test_i \
-	test_j \
+	qmeas_k \
+	qtelep_k \
+	qtocx_k \
+	qoot_k \
+	qooh_k \
 
 riscv_insn_ext_a = \
 	amoadd_d \
