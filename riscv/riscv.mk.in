@@ -113,11 +113,18 @@ riscv_insn_ext_i = \
 	xori \
 	fence \
 	fence_i \
+
+riscv_insn_ext_k = \
 	qmeas_k \
 	qtelep_k \
 	qtocx_k \
-	qoot_k \
 	qooh_k \
+	qooz_k \
+	qoox_k \
+	qoot_k \
+	qoos_k \
+	qootdg_k \
+	qoosdg_k \
 
 riscv_insn_ext_a = \
 	amoadd_d \
@@ -675,6 +682,7 @@ riscv_insn_list = \
 	$(riscv_insn_ext_f) \
 	$(riscv_insn_ext_d) \
 	$(riscv_insn_ext_q) \
+	$(riscv_insn_ext_k) \
 	$(if $(HAVE_INT128),$(riscv_insn_ext_v),) \
 	$(riscv_insn_priv) \
 
