@@ -1,2 +1,1 @@
-STATE.qbit = 0;
-WRITE_RD(sext_xlen(RS1 + RS2 + 16));
+WRITE_RD(10);
