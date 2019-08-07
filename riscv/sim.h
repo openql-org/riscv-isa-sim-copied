@@ -7,6 +7,9 @@
 #include "devices.h"
 #include "debug_module.h"
 #include "simif.h"
+#ifdef QUEST
+#include "QuEST.h"
+#endif
 #include <fesvr/htif.h>
 #include <fesvr/context.h>
 #include <vector>
@@ -55,6 +58,9 @@ private:
   std::unique_ptr<rom_device_t> boot_rom;
   std::unique_ptr<clint_t> clint;
   bus_t bus;
+#ifdef QUEST
+  QuESTEnv env;
+#endif
 
   processor_t* get_core(const std::string& i);
   void step(size_t n); // step through simulation

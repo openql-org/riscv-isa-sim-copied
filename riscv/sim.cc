@@ -43,6 +43,9 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
 
   debug_mmu = new mmu_t(this, NULL);
 
+#ifdef QUEST
+  env = createQuESTEnv();
+#endif
   if (hartids.size() == 0) {
     for (size_t i = 0; i < procs.size(); i++) {
       procs[i] = new processor_t(isa, varch, this, i, halted);
