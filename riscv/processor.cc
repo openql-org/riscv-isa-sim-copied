@@ -35,7 +35,7 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
   register_base_instructions();
   mmu = new mmu_t(sim, this);
 #ifdef QUEST
-  qubits = qubits;
+  this->qubits = qubits;
 #endif
 
   disassembler = new disassembler_t(max_xlen);

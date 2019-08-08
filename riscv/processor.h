@@ -305,7 +305,7 @@ public:
   state_t* get_state() { return &state; }
 
 #ifdef QUEST
-  Qureg* get_qubits() { return qubits; }
+  Qureg *get_qubits() { return qubits; }
 #endif
 
   unsigned get_xlen() { return xlen; }
