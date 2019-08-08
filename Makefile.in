@@ -65,7 +65,8 @@ install_exes_dir := $(INSTALLDIR)/bin
 # Set QuEST project path.
 #-------------------------------------------------------------------------
 QUEST_INC     := ../../../QuEST/QuEST/include/
-QUEST_RUNLIB  := ../../../QuEST/build/QuEST/libQuEST.a
+QUEST_RUNLIB  := -L../../../QuEST/build/QuEST/
+QUEST_LIB     := -lQuEST
 
 sprojs         := @subprojects@
 sprojs_enabled := @subprojects_enabled@
@@ -96,9 +97,9 @@ COMPILE_C     := $(CC) -MMD -MP $(CPPFLAGS) $(CFLAGS) \
 
 comma := ,
 LD            := $(CXX)
-LDFLAGS       := @LDFLAGS@
-LIBS          := @LIBS@
-LINK          := $(LD) -L. $(LDFLAGS) $(QUEST_RUNLIB) -Wl,-rpath,$(install_libs_dir) $(patsubst -L%,-Wl$(comma)-rpath$(comma)%,$(filter -L%,$(LDFLAGS)))
+LDFLAGS       := @LDFLAGS@ $(QUEST_RUNLIB)
+LIBS          := @LIBS@ $(QUEST_LIB)
+LINK          := $(LD) -L. $(LDFLAGS) -Wl,-rpath,$(install_libs_dir) $(patsubst -L%,-Wl$(comma)-rpath$(comma)%,$(filter -L%,$(LDFLAGS)))
 
 # Library creation
 

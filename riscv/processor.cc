@@ -21,7 +21,11 @@
 #define STATE state
 
 processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
-                         uint32_t id, bool halt_on_reset)
+		         uint32_t id,
+#ifdef QUEST
+                         Qureg *qubits,
+#endif
+                         bool halt_on_reset)
   : debug(false), halt_request(false), sim(sim), ext(NULL), id(id),
   halt_on_reset(halt_on_reset), last_pc(1), executions(1)
 {
@@ -30,6 +34,9 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
   parse_varch_string(varch);
   register_base_instructions();
   mmu = new mmu_t(sim, this);
+#ifdef QUEST
+  qubits = qubits;
+#endif
 
   disassembler = new disassembler_t(max_xlen);
   if (ext)

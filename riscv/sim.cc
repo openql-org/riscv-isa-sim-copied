@@ -24,7 +24,7 @@ static void handle_signal(int sig)
   signal(sig, &handle_signal);
 }
 
-sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
+sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uint8_t qbits_num,
              reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
              const std::vector<std::string>& args,
              std::vector<int> const hartids,
@@ -45,10 +45,21 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
 
 #ifdef QUEST
   env = createQuESTEnv();
+  qbits_num = qbits_num;
+  qubits = createQureg(qbits_num, env);
+  initZeroState(qubits);
+
+  // print reports
+  reportQuregParams(qubits);
+  reportQuESTEnv(env);
 #endif
   if (hartids.size() == 0) {
     for (size_t i = 0; i < procs.size(); i++) {
-      procs[i] = new processor_t(isa, varch, this, i, halted);
+      procs[i] = new processor_t(isa, varch, this, i, 
+#ifdef QUEST
+		                 &qubits,
+#endif
+		                 halted);
     }
   }
   else {
@@ -57,7 +68,11 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
       exit(1);
     }
     for (size_t i = 0; i < procs.size(); i++) {
-      procs[i] = new processor_t(isa, varch, this, hartids[i], halted);
+      procs[i] = new processor_t(isa, varch, this, hartids[i], 
+#ifdef QUEST
+		                 &qubits,
+#endif
+		                 halted);
     }
   }
 

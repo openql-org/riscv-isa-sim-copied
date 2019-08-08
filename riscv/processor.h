@@ -6,6 +6,9 @@
 #include "config.h"
 #include "devices.h"
 #include "trap.h"
+#ifdef QUEST
+#include "QuEST.h"
+#endif
 #include <string>
 #include <vector>
 #include <map>
@@ -285,7 +288,10 @@ static int cto(reg_t val)
 class processor_t : public abstract_device_t
 {
 public:
-  processor_t(const char* isa, const char* varch, simif_t* sim, uint32_t id,
+  processor_t(const char* isa, const char* varch, simif_t* sim, uint32_t id, 
+#ifdef QUEST
+              Qureg *qubits,
+#endif
               bool halt_on_reset=false);
   ~processor_t();
 
@@ -297,6 +303,11 @@ public:
   reg_t get_csr(int which);
   mmu_t* get_mmu() { return mmu; }
   state_t* get_state() { return &state; }
+
+#ifdef QUEST
+  Qureg* get_qubits() { return qubits; }
+#endif
+
   unsigned get_xlen() { return xlen; }
   unsigned get_max_xlen() { return max_xlen; }
   std::string get_isa_string() { return isa_string; }
@@ -420,6 +431,9 @@ public:
 
 private:
   simif_t* sim;
+#ifdef QUEST
+  Qureg *qubits;
+#endif
   mmu_t* mmu; // main memory is always accessed via the mmu
   extension_t* ext;
   disassembler_t* disassembler;

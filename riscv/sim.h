@@ -8,7 +8,9 @@
 #include "debug_module.h"
 #include "simif.h"
 #ifdef QUEST
+extern "C" {
 #include "QuEST.h"
+}
 #endif
 #include <fesvr/htif.h>
 #include <fesvr/context.h>
@@ -24,7 +26,7 @@ class remote_bitbang_t;
 class sim_t : public htif_t, public simif_t
 {
 public:
-  sim_t(const char* isa, const char* varch, size_t _nprocs, bool halted,
+  sim_t(const char* isa, const char* varch, size_t _nprocs, bool halted, uint8_t qbits_num,
         reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
         const std::vector<std::string>& args, const std::vector<int> hartids,
         const debug_module_config_t &dm_config);
@@ -58,8 +60,11 @@ private:
   std::unique_ptr<rom_device_t> boot_rom;
   std::unique_ptr<clint_t> clint;
   bus_t bus;
+  uint8_t qbits;
 #ifdef QUEST
   QuESTEnv env;
+  uint8_t qbits_num;
+  Qureg qubits;
 #endif
 
   processor_t* get_core(const std::string& i);
