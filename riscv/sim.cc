@@ -24,7 +24,7 @@ static void handle_signal(int sig)
   signal(sig, &handle_signal);
 }
 
-sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uint8_t qbits_num,
+sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uint8_t nqbits,
              reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
              const std::vector<std::string>& args,
              std::vector<int> const hartids,
@@ -45,8 +45,8 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uin
 
 #ifdef QUEST
   env = createQuESTEnv();
-  qbits_num = qbits_num;
-  qubits = createQureg(qbits_num, env);
+  qubits_num = nqbits;
+  qubits = createQureg(qubits_num, env);
   initZeroState(qubits);
 
   // print reports
@@ -84,6 +84,10 @@ sim_t::~sim_t()
 {
   for (size_t i = 0; i < procs.size(); i++)
     delete procs[i];
+#ifdef QUEST
+  destroyQureg(qubits, env);
+  destroyQuESTEnv(env);
+#endif
   delete debug_mmu;
 }
 

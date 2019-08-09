@@ -103,7 +103,7 @@ int main(int argc, char** argv)
   bool dump_dts = false;
   bool dtb_enabled = true;
   size_t nprocs = 1;
-  uint8_t qbits = 1;
+  uint8_t nqbits = 1;
   reg_t start_pc = reg_t(-1);
   std::vector<std::pair<reg_t, mem_t*>> mems;
   std::unique_ptr<icache_sim_t> ic;
@@ -145,7 +145,7 @@ int main(int argc, char** argv)
   parser.option('d', 0, 0, [&](const char* s){debug = true;});
   parser.option('g', 0, 0, [&](const char* s){histogram = true;});
   parser.option('l', 0, 0, [&](const char* s){log = true;});
-  parser.option('q', 0, 1, [&](const char* s){qbits = atoi(s);});
+  parser.option('q', 0, 1, [&](const char* s){nqbits = atoi(s);});
   parser.option('p', 0, 1, [&](const char* s){nprocs = atoi(s);});
   parser.option('m', 0, 1, [&](const char* s){mems = make_mems(s);});
   // I wanted to use --halted, but for some reason that doesn't work.
@@ -194,7 +194,7 @@ int main(int argc, char** argv)
   if (!*argv1)
     help();
 
-  sim_t s(isa, varch, nprocs, halted, qbits, start_pc, mems, htif_args, std::move(hartids),
+  sim_t s(isa, varch, nprocs, halted, nqbits, start_pc, mems, htif_args, std::move(hartids),
       dm_config);
   std::unique_ptr<remote_bitbang_t> remote_bitbang((remote_bitbang_t *) NULL);
   std::unique_ptr<jtag_dtm_t> jtag_dtm(
