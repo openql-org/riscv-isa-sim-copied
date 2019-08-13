@@ -6,4 +6,4 @@ dis:
 	riscv64-unknown-elf-objdump --disassemble=main test_qisa
 	
 exec:
-	spike -q10 pk test_qisa
+	spike -q16 pk test_qisa
