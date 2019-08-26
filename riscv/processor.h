@@ -15,6 +15,8 @@
 #include <cassert>
 #include "debug_rom_defines.h"
 
+#define QREGISTORS 32
+
 class processor_t;
 class mmu_t;
 typedef reg_t (*insn_func_t)(processor_t*, insn_t, reg_t);
@@ -290,7 +292,8 @@ class processor_t : public abstract_device_t
 public:
   processor_t(const char* isa, const char* varch, simif_t* sim, uint32_t id, 
 #ifdef QUEST
-              Qureg *qubits,
+              QuESTEnv *env,
+	      uint8_t nqbits,
 #endif
               bool halt_on_reset=false);
   ~processor_t();
@@ -305,7 +308,7 @@ public:
   state_t* get_state() { return &state; }
 
 #ifdef QUEST
-  Qureg *get_qubits() { return qubits; }
+  Qureg get_qubits() { return qubits; }
 #endif
 
   unsigned get_xlen() { return xlen; }
@@ -432,7 +435,12 @@ public:
 private:
   simif_t* sim;
 #ifdef QUEST
-  Qureg *qubits;
+  // TODO: replace vars, qubit => qubits(vector)
+  Qureg qubits;
+
+  // 32bit qubit register.
+  std::vector<Qureg> qubit;
+  QuESTEnv *env = NULL;
 #endif
   mmu_t* mmu; // main memory is always accessed via the mmu
   extension_t* ext;

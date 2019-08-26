@@ -60,11 +60,8 @@ private:
   std::unique_ptr<rom_device_t> boot_rom;
   std::unique_ptr<clint_t> clint;
   bus_t bus;
-  uint8_t qbits;
 #ifdef QUEST
   QuESTEnv env;
-  uint8_t qubits_num;
-  Qureg qubits;
 #endif
 
   processor_t* get_core(const std::string& i);

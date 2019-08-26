@@ -24,7 +24,7 @@ static void handle_signal(int sig)
   signal(sig, &handle_signal);
 }
 
-sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uint8_t nqbits,
+sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uint8_t nqbits, 
              reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
              const std::vector<std::string>& args,
              std::vector<int> const hartids,
@@ -45,19 +45,16 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uin
 
 #ifdef QUEST
   env = createQuESTEnv();
-  qubits_num = nqbits;
-  qubits = createQureg(qubits_num, env);
-  initZeroState(qubits);
-
-  // print reports
-  reportQuregParams(qubits);
-  reportQuESTEnv(env);
+  // print reports for debug.
+  // reportQuregParams(qubits);
+  // reportQuESTEnv(env);
 #endif
   if (hartids.size() == 0) {
     for (size_t i = 0; i < procs.size(); i++) {
       procs[i] = new processor_t(isa, varch, this, i, 
 #ifdef QUEST
-		                 &qubits,
+		                 &env,
+				 nqbits,
 #endif
 		                 halted);
     }
@@ -70,7 +67,8 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uin
     for (size_t i = 0; i < procs.size(); i++) {
       procs[i] = new processor_t(isa, varch, this, hartids[i], 
 #ifdef QUEST
-		                 &qubits,
+		                 &env,
+				 nqbits,
 #endif
 		                 halted);
     }
@@ -85,7 +83,6 @@ sim_t::~sim_t()
   for (size_t i = 0; i < procs.size(); i++)
     delete procs[i];
 #ifdef QUEST
-  destroyQureg(qubits, env);
   destroyQuESTEnv(env);
 #endif
   delete debug_mmu;

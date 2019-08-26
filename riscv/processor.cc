@@ -23,7 +23,8 @@
 processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
 		         uint32_t id,
 #ifdef QUEST
-                         Qureg *qubits,
+                         QuESTEnv *env,
+			 uint8_t nqbits,
 #endif
                          bool halt_on_reset)
   : debug(false), halt_request(false), sim(sim), ext(NULL), id(id),
@@ -35,7 +36,18 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
   register_base_instructions();
   mmu = new mmu_t(sim, this);
 #ifdef QUEST
-  this->qubits = qubits;
+  if (env != NULL) {
+    this->env = env;
+    // TODO: for testing.
+    qubits = createQureg(nqbits, *env);
+
+    // 32bit qbit registors
+    for (int i = 0; i < QREGISTORS; i++) {
+      Qureg q = createQureg(nqbits, *env);
+      initZeroState(q);
+      qubit.push_back(q);
+    }
+  }
 #endif
 
   disassembler = new disassembler_t(max_xlen);
@@ -59,6 +71,17 @@ processor_t::~processor_t()
 
   delete mmu;
   delete disassembler;
+
+#ifdef QUEST
+  // TODO: for testing.
+  if (env != NULL) {
+    destroyQureg(qubits, *env);
+
+    for (int i = 0; i < QREGISTORS; i++) {
+      destroyQureg(qubit[i], *env);
+    }
+  }
+#endif
 }
 
 static void bad_isa_string(const char* isa)
