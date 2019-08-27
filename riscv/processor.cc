@@ -25,6 +25,7 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
 #ifdef QUEST
                          QuESTEnv *env,
 			 uint8_t nqbits,
+			 uint16_t nregisters,
 #endif
                          bool halt_on_reset)
   : debug(false), halt_request(false), sim(sim), ext(NULL), id(id),
@@ -42,7 +43,9 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
     qubits = createQureg(nqbits, *env);
 
     // 32bit qbit registors
-    for (int i = 0; i < QREGISTORS; i++) {
+    printf("#qregister size : %d\n", nregisters);
+    printf("#qbit size      : %d\n", nqbits);
+    for (int i = 0; i < nregisters; i++) {
       Qureg q = createQureg(nqbits, *env);
       initZeroState(q);
       qubit.push_back(q);
@@ -77,9 +80,10 @@ processor_t::~processor_t()
   if (env != NULL) {
     destroyQureg(qubits, *env);
 
-    for (int i = 0; i < QREGISTORS; i++) {
+    for (unsigned int i = 0; i < qubit.size(); i++) {
       destroyQureg(qubit[i], *env);
     }
+    qubit.clear();
   }
 #endif
 }

@@ -19,6 +19,8 @@ extern "C" {
 #include <memory>
 #include <sys/types.h>
 
+#define QREGISTERS 32
+
 class mmu_t;
 class remote_bitbang_t;
 
@@ -26,7 +28,10 @@ class remote_bitbang_t;
 class sim_t : public htif_t, public simif_t
 {
 public:
-  sim_t(const char* isa, const char* varch, size_t _nprocs, bool halted, uint8_t nqbits,
+  sim_t(const char* isa, const char* varch, size_t _nprocs, bool halted,
+#ifdef QUEST
+        uint8_t nqbits, uint16_t nregisters,
+#endif
         reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
         const std::vector<std::string>& args, const std::vector<int> hartids,
         const debug_module_config_t &dm_config);

@@ -24,6 +24,7 @@ static void help(int exit_code = 1)
   fprintf(stderr, "  -m<a:m,b:n,...>       Provide memory regions of size m and n bytes\n");
   fprintf(stderr, "                          at base addresses a and b (with 4 KiB alignment)\n");
   fprintf(stderr, "  -q<n>                 Qbit num\n");
+  fprintf(stderr, "  -r<n>                 Qbit Register num\n");
   fprintf(stderr, "  -d                    Interactive debug mode\n");
   fprintf(stderr, "  -g                    Track histogram of PCs\n");
   fprintf(stderr, "  -l                    Generate a log of execution\n");
@@ -104,6 +105,7 @@ int main(int argc, char** argv)
   bool dtb_enabled = true;
   size_t nprocs = 1;
   uint8_t nqbits = 1;
+  uint16_t nregisters = QREGISTERS;
   reg_t start_pc = reg_t(-1);
   std::vector<std::pair<reg_t, mem_t*>> mems;
   std::unique_ptr<icache_sim_t> ic;
@@ -147,6 +149,7 @@ int main(int argc, char** argv)
   parser.option('l', 0, 0, [&](const char* s){log = true;});
   parser.option('q', 0, 1, [&](const char* s){nqbits = atoi(s);});
   parser.option('p', 0, 1, [&](const char* s){nprocs = atoi(s);});
+  parser.option('r', 0, 1, [&](const char* s){nregisters = atoi(s);});
   parser.option('m', 0, 1, [&](const char* s){mems = make_mems(s);});
   // I wanted to use --halted, but for some reason that doesn't work.
   parser.option('H', 0, 0, [&](const char* s){halted = true;});
@@ -194,7 +197,11 @@ int main(int argc, char** argv)
   if (!*argv1)
     help();
 
-  sim_t s(isa, varch, nprocs, halted, nqbits, start_pc, mems, htif_args, std::move(hartids),
+  sim_t s(isa, varch, nprocs, halted, 
+#ifdef QUEST
+      nqbits, nregisters,
+#endif
+      start_pc, mems, htif_args, std::move(hartids),
       dm_config);
   std::unique_ptr<remote_bitbang_t> remote_bitbang((remote_bitbang_t *) NULL);
   std::unique_ptr<jtag_dtm_t> jtag_dtm(

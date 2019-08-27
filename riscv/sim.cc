@@ -24,7 +24,10 @@ static void handle_signal(int sig)
   signal(sig, &handle_signal);
 }
 
-sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uint8_t nqbits, 
+sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
+#ifdef QUEST
+             uint8_t nqbits, uint16_t nregisters,
+#endif
              reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
              const std::vector<std::string>& args,
              std::vector<int> const hartids,
@@ -55,6 +58,7 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uin
 #ifdef QUEST
 		                 &env,
 				 nqbits,
+				 nregisters,
 #endif
 		                 halted);
     }
@@ -69,6 +73,7 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted, uin
 #ifdef QUEST
 		                 &env,
 				 nqbits,
+				 nregisters,
 #endif
 		                 halted);
     }

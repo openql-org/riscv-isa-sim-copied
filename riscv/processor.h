@@ -15,8 +15,6 @@
 #include <cassert>
 #include "debug_rom_defines.h"
 
-#define QREGISTORS 32
-
 class processor_t;
 class mmu_t;
 typedef reg_t (*insn_func_t)(processor_t*, insn_t, reg_t);
@@ -294,6 +292,7 @@ public:
 #ifdef QUEST
               QuESTEnv *env,
 	      uint8_t nqbits,
+	      uint16_t nregisters,
 #endif
               bool halt_on_reset=false);
   ~processor_t();

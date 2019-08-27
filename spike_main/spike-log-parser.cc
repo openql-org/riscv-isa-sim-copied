@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
   processor_t p(isa, DEFAULT_VARCH, 0, 0
 #ifdef QUEST
-		  ,0, 0
+		  ,0, 0, 0
 #endif
 		  );
 
