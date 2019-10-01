@@ -6,12 +6,12 @@ int main(int argc, char* argv[]) {
 
     // call qooh
     asm volatile(
-    "qooh.k  qa0,qt1,qzero,1;"
+    "qooh.k  qa0,qt1,qzero,1"
     );
 
     // call qmeas
     asm volatile(
-    "qmeas.k  %0,qt1,qzero,1;"
+    "qmeas.k  %0,qt1,qzero,1"
     :"=r"(ret1)
     :
     );
