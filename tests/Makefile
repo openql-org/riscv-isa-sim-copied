@@ -17,10 +17,13 @@ dis:
 exec:
 	spike -q16 pk test_qisa
 
-qfunc:
+qfunc-clang:
 	clang -target riscv64-unknown-linux-gnu -c test_qfunc.c -emit-llvm -o test_qfunc.bc
 	llc -march=riscv64 -relocation-model=pic -filetype=asm test_qfunc.bc  -o test_qfunc.s
-	riscv64-unknown-elf-gcc test_qfunc.s -o test_qfunc -march=rv64imakc
+	riscv64-unknown-elf-gcc test_qfunc.s -o test_qfunc -march=rv64imafdkc
+
+qfunc:
+	riscv64-unknown-elf-gcc test_qfunc.c -march=rv64imafdkc
 
 qfunc-exec:
 	spike -q3 pk test_qfunc
