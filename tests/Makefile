@@ -12,7 +12,8 @@ all:
 	riscv64-unknown-elf-gcc -I../riscv -O0 test_qisa.c -o test_qisa
 
 dis:
-	riscv64-unknown-elf-objdump --disassemble=main test_qisa
+	# riscv64-unknown-elf-objdump --disassemble=main test_qisa
+	riscv64-unknown-elf-objdump -D test_qisa > test_qisa.dis
 	
 exec:
 	spike -q16 pk test_qisa
@@ -27,3 +28,6 @@ qfunc:
 
 qfunc-exec:
 	spike -q3 pk test_qfunc
+
+clean: 
+	@rm -f test_qisa test_qisa.dis test_qisa.o test_qisa.i test_qisa.s

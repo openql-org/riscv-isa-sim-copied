@@ -16,7 +16,6 @@
 
 #define c_jr_x1 "\x82\x80\x00\x00"   // 0x8082 is `c.jr x1`
 
-// rd is x10
 #define qtelep_rd5_q1_q0 "\x0b\x85\x00"
 #define qmeas_rd5_q1_q0  "\x0b\x85\x00"  // should be qimm7
 #define qtocx_rd5_q1_q0  "\x0b\xc5\x00"  // should be qimm7
@@ -59,39 +58,37 @@
 #define qimm7_d "\x9a"
 #define qimm7_e "\x9c"
 #define qimm7_f "\x9e"
+#define qooh_   "\x0b\xf5\xf0"
+#define set_a5_0 "\xaa\x87"
+#define addi_a5_ "\xad\x07" // = 11
 
-#define QOP(op,rd,rs1,rs2,qimm6) ((int (*)())op)()  // TODO: to use parameters
+#define SuperpositionAndMeasure(qop,pos) ((int (*)())qop)()  // TODO: to use parameters
+static char* test_prog[] = { 
+qtelep_rd5_q1_q0 qimm6_0 \
+set_a5_0 addi_a5_ \
+qooh_ qimm6_0 \
+qmeas_rd5_q1_q0 qimm7_1 \
+c_jr_x1,
+      NULL };
 
 int main(int argc, char **argv) {
-    char* ops[] = { 
-qtelep_rd5_q1_q0 qimm6_0 \
-qooz_rd5_q1_q0 qimm6_0 \
-qooh_rd5_q1_q0 qimm6_0 \
-qoos_rd5_q1_q0 qimm6_0 \
-qmeas_rd5_q1_q0 qimm7_0 \
-c_jr_x1,
 
-// qooh_rd5_q1_q0 "\x02" c_jr_x1,
-// qooh_rd5_q1_q0 "\x04" c_jr_x1,
-// qooh_rd5_q1_q0 "\x06" c_jr_x1,
-// qooh_rd5_q1_q0 "\x08" c_jr_x1,
-// qooh_rd5_q1_q0 "\x0a" c_jr_x1,
-// qooh_rd5_q1_q0 "\x0c" c_jr_x1,
-// qooh_rd5_q1_q0 "\x0f" c_jr_x1,
-// qooh_rd5_q1_q0 "\x10" c_jr_x1,
-// qooh_rd5_q1_q0 "\x12" c_jr_x1,
-// qooh_rd5_q1_q0 "\x14" c_jr_x1,
-// qooh_rd5_q1_q0 "\x16" c_jr_x1,
-// qooh_rd5_q1_q0 "\x18" c_jr_x1,
-// qooh_rd5_q1_q0 "\x1a" c_jr_x1,
-// qooh_rd5_q1_q0 "\x1c" c_jr_x1,
-// qooh_rd5_q1_q0 "\x1f" c_jr_x1,
-      NULL };
-    for( char **p = &ops[0]; *p != NULL; p++){
-        char *o = *p;
-        uint32_t op = (uint8_t)*o + ((uint8_t)*(o+1) <<8) + ((uint8_t)*(o+2) <<16) + ((uint8_t)*(o+3) <<24);
-        int c = QOP(*p, /*rd*/ 10, /*rs1*/ 1, /*rs2*/ 2, /*qimm6*/ 3);
-        printf("%08x: %d\n",op, c);
-    }
+      char **ops = &test_prog[0];
+
+        //for( int i = 0; i < 16; i++) {
+          int qreg;
+
+          #pragma oql quantum private(qreg)
+          {
+            qreg = SuperpositionAndMeasure(*ops, 0);
+          }
+
+        printf("Result => %d\n",qreg);
+        // printf("[%.3d] Result => %d\n",i, qreg);
+        //}
+    
     return 0;
 }
+
+
+

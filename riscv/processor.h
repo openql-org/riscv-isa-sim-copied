@@ -307,7 +307,10 @@ public:
   state_t* get_state() { return &state; }
 
 #ifdef QUEST
-  Qureg get_qubits() { return qubits; }
+  Qureg get_qubits(uint16_t qreg_num = 1) {
+    if (qreg_num <= 0 || qreg_num > 31 ) qreg_num = 1;
+    return qubit[qreg_num - 1];
+  }
 #endif
 
   unsigned get_xlen() { return xlen; }
