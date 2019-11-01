@@ -30,5 +30,15 @@ qfunc:
 qfunc-exec:
 	spike -q3 pk test_qfunc
 
+qfunc-test:
+	clang -target riscv64-unknown-linux-gnu -emit-llvm -S -O3 -o  test_q_test.ll test_q_test.c
+	clang -target riscv64-unknown-linux-gnu -O3 -c test_qfunc_test.c -emit-llvm -o test_qfunc_test.bc
+	llvm-dis test_qfunc_test.bc
+	clang -target riscv64-unknown-linux-gnu -emit-llvm -S -O -o  test_q_test.ll test_q_test.c
+	llvm-link test_qfunc_test.ll test_q_test.ll -S -o link.ll
+	opt -O3 -S -mem2reg  link.ll > out.ll
+	llc -march=riscv64 -relocation-model=pic -filetype=asm out.ll -o test_qfunc_test.s
+	riscv64-unknown-elf-gcc test_qfunc_test.s -o test_qfunc_test -march=rv64imafdkc
+
 clean: 
 	@rm -f test_qisa test_qisa.dis test_qisa.o test_qisa.i test_qisa.s
