@@ -20,11 +20,12 @@ exec:
 
 qfunc-clang:
 	clang -target riscv64-unknown-linux-gnu -c test_qfunc.c -emit-llvm -o test_qfunc.bc
+	llvm-dis test_qfunc.bc
 	llc -march=riscv64 -relocation-model=pic -filetype=asm test_qfunc.bc  -o test_qfunc.s
 	riscv64-unknown-elf-gcc test_qfunc.s -o test_qfunc -march=rv64imafdkc
 
 qfunc:
-	riscv64-unknown-elf-gcc test_qfunc.c -march=rv64imafdkc
+	riscv64-unknown-elf-gcc test_qfunc.c -march=rv64imafdkc -o test_qfunc
 
 qfunc-exec:
 	spike -q3 pk test_qfunc
