@@ -40,8 +40,9 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
   if (env != NULL) {
     this->env = env;
     // TODO: for testing.
-    qubits = createQureg(nqbits, *env);
+    qubits = createQureg(nqbits*nregisters, *env);
 
+    #if 0
     // 32bit qbit registors
     printf("#qregister size : %d\n", nregisters);
     printf("#qbit size      : %d\n", nqbits);
@@ -50,6 +51,7 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
       initZeroState(q);
       qubit.push_back(q);
     }
+    #endif /* 0 */
   }
 #endif
 

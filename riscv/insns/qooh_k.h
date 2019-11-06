@@ -9,7 +9,7 @@ if (rs2_num == 0) {
 } else {
   fprintf(stderr, "rs2 : %lx\n", RS2);
   for (uint8_t i = 0; i < 32; i++ ) {
-    if ( ( RS2 >> i ) & 0x1 == 1 ) {
+    if ( (( RS2 >> i ) & 0x1) == 1 ) {
       fprintf(stderr, "q_idx = %d\n", i);
       hadamard(p->get_qubits(rs1_idx), i);
     }

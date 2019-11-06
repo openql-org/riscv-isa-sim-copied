@@ -311,6 +311,9 @@ public:
     if (qreg_num <= 0 || qreg_num > 31 ) qreg_num = 1;
     return qubit[qreg_num - 1];
   }
+  Qureg get_qubit() {
+    return qubits;
+  }
 #endif
 
   unsigned get_xlen() { return xlen; }
