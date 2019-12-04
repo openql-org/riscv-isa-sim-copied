@@ -64,8 +64,8 @@ install_exes_dir := $(INSTALLDIR)/bin
 # List of subprojects
 # Set QuEST project path.
 #-------------------------------------------------------------------------
-QUEST_INC     := ../../../QuEST/QuEST/include/
-QUEST_RUNLIB  := -L../../../QuEST/build/QuEST/
+QUEST_INC     := ../QuEST/QuEST/include/
+QUEST_RUNLIB  := -L../QuEST/build/QuEST/
 QUEST_LIB     := -lQuEST
 
 sprojs         := @subprojects@
