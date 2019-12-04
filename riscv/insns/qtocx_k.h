@@ -1,19 +1,19 @@
 #ifdef QUEST
-reg_t rs2_num = insn.rs2();
-uint32_t rs1_idx = insn.rs1();
-uint32_t qimm6 = insn.k_qimm6();
-uint32_t target = insn.rd();
-fprintf(stderr, "controlledNot : rd: %ld, rs1: %ld, rs2: %ld, qimm6: %ld\n", insn.rd(), insn.rs1(), insn.rs2(), insn.k_qimm6());
-if (rs2_num == 0) {
-  hadamard(p->get_qubits(rs1_idx), qimm6);
-  controlledNot(p->get_qubits(rs1_idx), qimm6, target);
-  STATE.qbit = qimm6;
+reg_t rs2_reg = insn.rs2();       // reference c-register
+uint32_t rs1_num = insn.rs1();    // target q-register number
+uint32_t qbit_idx = insn.k_qimm6();  // qubit index of the target q-register
+uint8_t nqregisters = p->get_nqregisters();
+uint8_t nqubits = p->get_nqubits();
+fprintf(stderr, "qtocx (rd)%ld, (rs1)%ld, (rs2)%ld, (qimm6)%ld\n", insn.rd(), insn.rs1(), insn.rs2(), insn.k_qimm6());
+if (rs2_reg == 0) {
+  controlledNot(p->get_qubits(rs1_num), insn.rd(), qbit_idx);
+  STATE.qbit = qbit_idx;
 } else {
   fprintf(stderr, "rs2 : %lx\n", RS2);
-  for (uint8_t i = 0; i < 32; i++ ) {
+  for (uint8_t i = 0; i < nqubits ; i++ ) {
     if ( (( RS2 >> i ) & 0x1) == 1 ) {
       fprintf(stderr, "q_idx = %d\n", i);
-      //hadamard(p->get_qubits(rs1_idx), i);
+      // TODO:
     }
   }
 }

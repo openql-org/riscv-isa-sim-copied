@@ -16,16 +16,16 @@ int main(int argc, char* argv[]) {
     :"=r"(ret1)
     :
     );
+      qtocx.k   qt1, qt1, qzero, 2;\
     ***/
     
     asm volatile(
     " qtelep.k  qa0, qt1, qzero, 0;\
-      mv        a6, a0;\
-      mv        a5, a0;\
-      addi      a6, a6, 11;\
-      qooh.k    qa0, qt1, qa6, 0;\
-      qtocx.k   qt1, qt1, qzero, 2;\
-      qmeas.k   %0, qt1, qa6, 0;\
+      li        %0, 0;\
+      li        a7, 11;\
+      qooh.k    qa0, qt1, qzero, 0;\
+      qooz.k    qa0, qt1, qzero, 0;\
+      qmeas.k   %0, qt1, qzero, 0;\
     "
     :"=r"(ret1)
     :

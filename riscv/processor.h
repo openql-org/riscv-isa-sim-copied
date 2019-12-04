@@ -291,8 +291,8 @@ public:
   processor_t(const char* isa, const char* varch, simif_t* sim, uint32_t id, 
 #ifdef QUEST
               QuESTEnv *env,
-	      uint8_t nqbits,
-	      uint16_t nregisters,
+	      uint8_t nqubits,
+	      uint8_t nqregisters,
 #endif
               bool halt_on_reset=false);
   ~processor_t();
@@ -308,12 +308,11 @@ public:
 
 #ifdef QUEST
   Qureg get_qubits(uint16_t qreg_num = 1) {
-    if (qreg_num <= 0 || qreg_num > 31 ) qreg_num = 1;
-    return qubit[qreg_num - 1];
+    if (qreg_num <= 0 || qreg_num > nqregisters ) qreg_num = 1;
+    return qregs[qreg_num - 1];
   }
-  Qureg get_qubit() {
-    return qubits;
-  }
+  uint8_t get_nqubits() { return nqubits; }
+  uint8_t get_nqregisters() { return nqregisters; }
 #endif
 
   unsigned get_xlen() { return xlen; }
@@ -441,11 +440,13 @@ private:
   simif_t* sim;
 #ifdef QUEST
   // TODO: replace vars, qubit => qubits(vector)
-  Qureg qubits;
+  // Qureg qubits;
 
   // 32bit qubit register.
-  std::vector<Qureg> qubit;
+  std::vector<Qureg> qregs;
   QuESTEnv *env = NULL;
+	uint8_t nqubits;
+	uint8_t nqregisters;
 #endif
   mmu_t* mmu; // main memory is always accessed via the mmu
   extension_t* ext;

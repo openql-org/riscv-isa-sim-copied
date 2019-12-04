@@ -16,7 +16,7 @@ dis:
 	riscv64-unknown-elf-objdump -D test_qisa > test_qisa.dis
 	
 exec:
-	spike -q16 pk test_qisa
+	spike -q8 -r32 pk test_qisa
 
 qfunc-clang:
 	clang -target riscv64-unknown-linux-gnu -c test_qfunc.c -emit-llvm -o test_qfunc.bc
@@ -31,7 +31,7 @@ qfunc-dis:
 	riscv64-unknown-elf-objdump -D test_qfunc > test_qfunc.dis
 
 qfunc-exec:
-	spike -q8 pk test_qfunc
+	spike -q4 pk test_qfunc
 
 qfunc-test:
 	clang -target riscv64-unknown-linux-gnu -emit-llvm -S -O3 -o  test_q_test.ll test_q_test.c
