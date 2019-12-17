@@ -26,6 +26,9 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
                          QuESTEnv *env,
 			 uint8_t nqubits,
 			 uint8_t nqregisters,
+			 bool gnuradio,
+			 size_t sendport,
+			 size_t rcvport,
 #endif
                          bool halt_on_reset)
   : debug(false), halt_request(false), sim(sim), ext(NULL), id(id),
@@ -41,6 +44,9 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
     this->env = env;
     this->nqubits = nqubits;
     this->nqregisters = nqregisters;
+    this->gnuradio = gnuradio;
+    this->sendport = sendport;
+    this->rcvport = rcvport;
     // TODO: for testing.
     // qubits = createQureg(nqubits*nqregisters, *env);
 

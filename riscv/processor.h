@@ -293,6 +293,9 @@ public:
               QuESTEnv *env,
 	      uint8_t nqubits,
 	      uint8_t nqregisters,
+	      bool gnuradio,
+	      size_t sendport,
+	      size_t rcvport,
 #endif
               bool halt_on_reset=false);
   ~processor_t();
@@ -313,6 +316,11 @@ public:
   }
   uint8_t get_nqubits() { return nqubits; }
   uint8_t get_nqregisters() { return nqregisters; }
+
+  bool get_gnuradio() { return gnuradio; }
+  size_t get_osc_sendport() { return sendport; }
+  size_t get_osc_recvport() { return rcvport; }
+
 #endif
 
   unsigned get_xlen() { return xlen; }
@@ -445,8 +453,11 @@ private:
   // 32bit qubit register.
   std::vector<Qureg> qregs;
   QuESTEnv *env = NULL;
-	uint8_t nqubits;
-	uint8_t nqregisters;
+  uint8_t nqubits;
+  uint8_t nqregisters;
+  bool gnuradio;
+  size_t sendport;
+  size_t rcvport;
 #endif
   mmu_t* mmu; // main memory is always accessed via the mmu
   extension_t* ext;

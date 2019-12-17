@@ -26,7 +26,7 @@ static void handle_signal(int sig)
 
 sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
 #ifdef QUEST
-             uint8_t nqbits, uint16_t nregisters,
+             uint8_t nqbits, uint16_t nregisters, bool gnuradio, size_t sendport, size_t rcvport,
 #endif
              reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
              const std::vector<std::string>& args,
@@ -59,6 +59,9 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
 		                 &env,
 				 nqbits,
 				 nregisters,
+				 gnuradio,
+				 sendport,
+				 rcvport,
 #endif
 		                 halted);
     }
@@ -74,6 +77,9 @@ sim_t::sim_t(const char* isa, const char* varch, size_t nprocs, bool halted,
 		                 &env,
 				 nqbits,
 				 nregisters,
+				 gnuradio,
+				 sendport,
+				 rcvport,
 #endif
 		                 halted);
     }

@@ -25,6 +25,8 @@ static void help(int exit_code = 1)
   fprintf(stderr, "                          at base addresses a and b (with 4 KiB alignment)\n");
   fprintf(stderr, "  -q<n>                 Qbit num\n");
   fprintf(stderr, "  -r<n>                 Qbit Register num\n");
+  fprintf(stderr, "  -k                    Run on GNU Radio(default is spike emulator)\n");
+  fprintf(stderr, "  -o<port>              OSC recive port \n");
   fprintf(stderr, "  -d                    Interactive debug mode\n");
   fprintf(stderr, "  -g                    Track histogram of PCs\n");
   fprintf(stderr, "  -l                    Generate a log of execution\n");
@@ -103,6 +105,9 @@ int main(int argc, char** argv)
   bool log = false;
   bool dump_dts = false;
   bool dtb_enabled = true;
+  bool gnuradio = false;
+  size_t sendport = 7000;
+  size_t rcvport = 7001;
   size_t nprocs = 1;
   uint8_t nqbits = 1;
   uint16_t nregisters = QREGISTERS;
@@ -147,6 +152,9 @@ int main(int argc, char** argv)
   parser.option('d', 0, 0, [&](const char* s){debug = true;});
   parser.option('g', 0, 0, [&](const char* s){histogram = true;});
   parser.option('l', 0, 0, [&](const char* s){log = true;});
+  parser.option('k', 0, 0, [&](const char* s){gnuradio = true;});
+  parser.option('s', 0, 1, [&](const char* s){sendport = atoi(s);});
+  parser.option('o', 0, 1, [&](const char* s){rcvport = atoi(s);});
   parser.option('q', 0, 1, [&](const char* s){nqbits = atoi(s);});
   parser.option('p', 0, 1, [&](const char* s){nprocs = atoi(s);});
   parser.option('r', 0, 1, [&](const char* s){nregisters = atoi(s);});
@@ -199,7 +207,7 @@ int main(int argc, char** argv)
 
   sim_t s(isa, varch, nprocs, halted, 
 #ifdef QUEST
-      nqbits, nregisters,
+      nqbits, nregisters, gnuradio, sendport, rcvport,
 #endif
       start_pc, mems, htif_args, std::move(hartids),
       dm_config);
