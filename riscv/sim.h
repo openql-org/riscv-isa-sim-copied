@@ -30,7 +30,7 @@ class sim_t : public htif_t, public simif_t
 public:
   sim_t(const char* isa, const char* varch, size_t _nprocs, bool halted,
 #ifdef QUEST
-        uint8_t nqbits, uint16_t nregisters, bool gnuradio, size_t sendport, size_t rcvport,
+        uint8_t nqbits, uint16_t nregisters, bool gnuradio, const char *sendip, size_t sendport, size_t rcvport,
 #endif
         reg_t start_pc, std::vector<std::pair<reg_t, mem_t*>> mems,
         const std::vector<std::string>& args, const std::vector<int> hartids,

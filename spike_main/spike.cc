@@ -26,6 +26,8 @@ static void help(int exit_code = 1)
   fprintf(stderr, "  -q<n>                 Qbit num\n");
   fprintf(stderr, "  -r<n>                 Qbit Register num\n");
   fprintf(stderr, "  -k                    Run on GNU Radio(default is spike emulator)\n");
+  fprintf(stderr, "  -i<address>           OSC send ip address \n");
+  fprintf(stderr, "  -s<port>              OSC send port \n");
   fprintf(stderr, "  -o<port>              OSC recive port \n");
   fprintf(stderr, "  -d                    Interactive debug mode\n");
   fprintf(stderr, "  -g                    Track histogram of PCs\n");
@@ -106,6 +108,7 @@ int main(int argc, char** argv)
   bool dump_dts = false;
   bool dtb_enabled = true;
   bool gnuradio = false;
+  const char *sendip = "localhost";
   size_t sendport = 7000;
   size_t rcvport = 7001;
   size_t nprocs = 1;
@@ -153,6 +156,7 @@ int main(int argc, char** argv)
   parser.option('g', 0, 0, [&](const char* s){histogram = true;});
   parser.option('l', 0, 0, [&](const char* s){log = true;});
   parser.option('k', 0, 0, [&](const char* s){gnuradio = true;});
+  parser.option('i', 0, 1, [&](const char* s){sendip = s;});
   parser.option('s', 0, 1, [&](const char* s){sendport = atoi(s);});
   parser.option('o', 0, 1, [&](const char* s){rcvport = atoi(s);});
   parser.option('q', 0, 1, [&](const char* s){nqbits = atoi(s);});
@@ -207,7 +211,7 @@ int main(int argc, char** argv)
 
   sim_t s(isa, varch, nprocs, halted, 
 #ifdef QUEST
-      nqbits, nregisters, gnuradio, sendport, rcvport,
+      nqbits, nregisters, gnuradio, sendip, sendport, rcvport,
 #endif
       start_pc, mems, htif_args, std::move(hartids),
       dm_config);

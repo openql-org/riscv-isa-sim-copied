@@ -27,6 +27,7 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
 			 uint8_t nqubits,
 			 uint8_t nqregisters,
 			 bool gnuradio,
+			 const char *sendip,
 			 size_t sendport,
 			 size_t rcvport,
 #endif
@@ -45,6 +46,7 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
     this->nqubits = nqubits;
     this->nqregisters = nqregisters;
     this->gnuradio = gnuradio;
+    this->sendip = sendip;
     this->sendport = sendport;
     this->rcvport = rcvport;
     // TODO: for testing.

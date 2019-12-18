@@ -294,6 +294,7 @@ public:
 	      uint8_t nqubits,
 	      uint8_t nqregisters,
 	      bool gnuradio,
+	      const char *sendip,
 	      size_t sendport,
 	      size_t rcvport,
 #endif
@@ -320,6 +321,7 @@ public:
   bool get_gnuradio() { return gnuradio; }
   size_t get_osc_sendport() { return sendport; }
   size_t get_osc_recvport() { return rcvport; }
+  const char *get_osc_sendip() { return sendip; }
 
 #endif
 
@@ -456,6 +458,7 @@ private:
   uint8_t nqubits;
   uint8_t nqregisters;
   bool gnuradio;
+  const char *sendip;
   size_t sendport;
   size_t rcvport;
 #endif
