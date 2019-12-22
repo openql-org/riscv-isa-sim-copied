@@ -4,7 +4,6 @@
 int main(int argc, char* argv[]) {
     int ret1 = 0;
 
-    /***
     // call qooh
     asm volatile(
     "qooh.k  qa0,qt1,qzero,1"
@@ -16,9 +15,9 @@ int main(int argc, char* argv[]) {
     :"=r"(ret1)
     :
     );
-      qtocx.k   qt1, qt1, qzero, 2;\
-    ***/
+    printf("%d\n", ret1);
     
+#if 0
     asm volatile(
     " qtelep.k  qa0, qt1, qzero, 0;\
       li        %0, 0;\
@@ -31,6 +30,7 @@ int main(int argc, char* argv[]) {
     :
     );
     printf("%d\n", ret1);
+#endif
 
     return 0;
 }

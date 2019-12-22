@@ -14,10 +14,8 @@ if (gnuradio) {
     char buffer[1024];
     osc::OutboundPacketStream p( buffer, 1024 );
     p << osc::BeginBundleImmediate
-        << osc::BeginMessage( "/test1" )
-            << true << 23 << (float)3.1415 << "hello" << osc::EndMessage
-        << osc::BeginMessage( "/test2" )
-            << true << 24 << (float)10.8 << "world" << osc::EndMessage
+        << osc::BeginMessage( "/measure" )
+            << 1 << (int)qbit_idx << osc::EndMessage
         << osc::EndBundle;
     transmitSocket.Send( p.Data(), p.Size() );
 }
