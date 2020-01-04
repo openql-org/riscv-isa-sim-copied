@@ -236,6 +236,14 @@ struct state_t
   reg_t satp;
   reg_t scause;
 
+  // control and status registers for quantum
+  reg_t qstatus;
+  // reg_t qepc;
+  // reg_t qtval;
+  // reg_t qscratch;
+  // reg_t qtvec;
+  // reg_t qcause;
+
   reg_t dpc;
   reg_t dscratch0, dscratch1;
   dcsr_t dcsr;
@@ -250,7 +258,6 @@ struct state_t
 
   uint32_t fflags;
   uint32_t frm;
-  uint32_t qbit;
   bool serialized; // whether timer CSRs are in a well-defined state
 
   // When true, execute a single instruction and then enter debug mode.  This
@@ -311,18 +318,14 @@ public:
   state_t* get_state() { return &state; }
 
 #ifdef QUEST
-  Qureg get_qubits(uint16_t qreg_num = 1) {
-    if (qreg_num <= 0 || qreg_num > nqregisters ) qreg_num = 1;
-    return qregs[qreg_num - 1];
-  }
+  QuESTEnv *get_quenv() { return env; }
   uint8_t get_nqubits() { return nqubits; }
   uint8_t get_nqregisters() { return nqregisters; }
-
   bool get_gnuradio() { return gnuradio; }
   size_t get_osc_sendport() { return sendport; }
   size_t get_osc_recvport() { return rcvport; }
   const char *get_osc_sendip() { return sendip; }
-
+  Qureg get_qubits() { return qubits; }
 #endif
 
   unsigned get_xlen() { return xlen; }
@@ -449,11 +452,11 @@ public:
 private:
   simif_t* sim;
 #ifdef QUEST
-  // TODO: replace vars, qubit => qubits(vector)
-  // Qureg qubits;
-
   // 32bit qubit register.
-  std::vector<Qureg> qregs;
+  Qureg qubits;
+
+  // TODO: replace vars, qubit => qubits(vector) ?
+  // std::vector<Qureg> qregs;
   QuESTEnv *env = NULL;
   uint8_t nqubits;
   uint8_t nqregisters;

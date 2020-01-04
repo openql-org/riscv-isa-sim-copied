@@ -31,7 +31,25 @@ qfunc-dis:
 	riscv64-unknown-elf-objdump -D test_qfunc > test_qfunc.dis
 
 qfunc-exec:
-	spike -q4 pk test_qfunc
+	spike -q2 -r4 pk test_qfunc
+
+qfunc-exec-4x5:
+	spike -q4 -r5 pk test_qfunc
+
+qfunc-exec-5x4:
+	spike -q5 -r4 pk test_qfunc
+
+qfunc-exec-8x2:
+	spike -q8 -r2 pk test_qfunc
+
+qfunc-exec-12x1:
+	spike -q12 -r1 pk test_qfunc
+
+qfunc-exec-2x12:
+	spike -q2 -r12 pk test_qfunc
+
+qfunc-exec-1x24:
+	spike -q1 -r24 pk test_qfunc
 
 qfunc-test:
 	clang -target riscv64-unknown-linux-gnu -emit-llvm -S -O3 -o  test_q_test.ll test_q_test.c

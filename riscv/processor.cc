@@ -50,16 +50,17 @@ processor_t::processor_t(const char* isa, const char* varch, simif_t* sim,
     this->sendport = sendport;
     this->rcvport = rcvport;
     // TODO: for testing.
-    // qubits = createQureg(nqubits*nqregisters, *env);
+    qubits = createQureg(nqubits * (nqregisters + 1), *env);
+    initZeroState(qubits);
 
     // 32bit qbit registors
     printf("#qregister size : %d\n", nqregisters);
     printf("#qbit size      : %d\n", nqubits);
-    for (int i = 0; i < nqregisters; i++) {
-      Qureg q = createQureg(nqubits, *env);
-      initZeroState(q);
-      qregs.push_back(q);
-    }
+    // for (int i = 0; i < nqregisters; i++) {
+    //   Qureg q = createQureg(nqubits, *env);
+    //   initZeroState(q);
+    //   qregs.push_back(q);
+    // }
   }
 #endif
 
@@ -88,12 +89,12 @@ processor_t::~processor_t()
 #ifdef QUEST
   // TODO: for testing.
   if (env != NULL) {
-    // destroyQureg(qubits, *env);
+    destroyQureg(qubits, *env);
 
-    for (unsigned int i = 0; i < qregs.size(); i++) {
-      destroyQureg(qregs[i], *env);
-    }
-    qregs.clear();
+    // for (unsigned int i = 0; i < qregs.size(); i++) {
+    //   destroyQureg(qregs[i], *env);
+    // }
+    // qregs.clear();
   }
 #endif
 }
@@ -514,10 +515,15 @@ void processor_t::set_csr(int which, reg_t val)
       dirty_fp_state;
       state.frm = val & (FSR_RD >> FSR_RD_SHIFT);
       break;
-    case CSR_QBIT:
+    case CSR_QSTATUS: {
       dirty_fp_state;
-      state.qbit = val;
+      state.qstatus = val;
       break;
+    }
+    // case CSR_QEPC: state.qepc = val & ~(reg_t)1; break;
+    // case CSR_QTVEC: state.qtvec = val & ~(reg_t)2; break;
+    // case CSR_QSCRATCH: state.qscratch = val; break;
+    // case CSR_QCAUSE: state.qcause = val; break;
     case CSR_FCSR:
       dirty_fp_state;
       state.fflags = (val & FSR_AEXC) >> FSR_AEXC_SHIFT;
