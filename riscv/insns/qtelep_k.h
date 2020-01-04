@@ -35,11 +35,49 @@ if (gnuradio) {
   } else if (rs1_num > 0 && rs1_num <= nqregisters && rs2_num > 0 && rs2_num <= nqregisters) {
     if (!qimm6_flag) {  // qimm6(30) == 1
       for (uint8_t i = 0; i < nqubits ; i++ ) {
-        // TODO: quantum teleportation
+        p << osc::BeginBundleImmediate
+          << osc::BeginMessage( "/InitZero" )
+            << (int)0 << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/InitZero" )
+            << (int)rs2_num << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/H" )
+            << (int)0 << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/CX" )
+            << (int)rs2_num << (int)i << (int)0 << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/CX" )
+            << (int)0 << (int)i << (int)rs1_num << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/CX" )
+            << (int)rs1_num << (int)i << (int)rs2_num << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/H" )
+            << (int)rs1_num << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/Mz" )
+            << (int)rs1_num << (int)i << osc::EndMessage
+          << osc::BeginMessage( "/Mz" )
+            << (int)0 << (int)i << osc::EndMessage
+          << osc::EndBundle;
       }
     } else {
       if (qimm6 >= 0 && qimm6 < nqubits && target >=0 && target < nqubits) {
-        // TODO: quantum teleportation
+        p << osc::BeginBundleImmediate
+          << osc::BeginMessage( "/InitZero" )
+            << (int)0 << (int)qimm6 << osc::EndMessage
+          << osc::BeginMessage( "/InitZero" )
+            << (int)rs2_num << (int)qimm6 << osc::EndMessage
+          << osc::BeginMessage( "/H" )
+            << (int)0 << (int)qimm6 << osc::EndMessage
+          << osc::BeginMessage( "/CX" )
+            << (int)rs2_num << (int)qimm6 << (int)0 << (int)qimm6 << osc::EndMessage
+          << osc::BeginMessage( "/CX" )
+            << (int)0 << (int)qimm6 << (int)rs1_num << (int)target << osc::EndMessage
+          << osc::BeginMessage( "/CX" )
+            << (int)rs1_num << (int)target << (int)rs2_num << (int)qimm6 << osc::EndMessage
+          << osc::BeginMessage( "/H" )
+            << (int)rs1_num << (int)target << osc::EndMessage
+          << osc::BeginMessage( "/Mz" )
+            << (int)rs1_num << (int)target << osc::EndMessage
+          << osc::BeginMessage( "/Mz" )
+            << (int)0 << (int)qimm6 << osc::EndMessage
+          << osc::EndBundle;
       }
     }
   }
@@ -73,9 +111,11 @@ if (rs1_num == 0 && rs2_num > 0 && rs2_num <= nqregisters) {
       hadamard(qubits, i);
       controlledNot(qubits, i, bob);  // entangled between ancilla and bob
       controlledNot(qubits, alice, i);
-      hadamard(qubits, alice);
-      if (measure(qubits, i) == 1) { pauliX(qubits, bob); }
-      if (measure(qubits, alice) == 1) { pauliZ(qubits, bob); }
+      controlledNot(qubits, i, bob);
+      controlledNot(qubits, bob, alice);
+      hadamard(qubits,alice);
+      measure(qubits, alice);
+      measure(qubits, i);
     }
   } else {
     if (qimm6 >= 0 && qimm6 < nqubits && target >=0 && target < nqubits) {
@@ -88,9 +128,11 @@ if (rs1_num == 0 && rs2_num > 0 && rs2_num <= nqregisters) {
       hadamard(qubits, qimm6);
       controlledNot(qubits, qimm6, bob);  // entangled between ancilla and bob
       controlledNot(qubits, alice, qimm6);
+      controlledNot(qubits, qimm6, bob);
+      controlledNot(qubits, bob, alice);
       hadamard(qubits, alice);
-      if (measure(qubits, qimm6) == 1) { pauliX(qubits, bob); }
-      if (measure(qubits, alice) == 1) { pauliZ(qubits, bob); }
+      measure(qubits, alice);
+      measure(qubits, qimm6);
     } else {
       // TODO: qimm6 error
       fprintf(stderr, "out of order [qimm6]\n");
