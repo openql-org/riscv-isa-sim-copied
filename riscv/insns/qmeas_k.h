@@ -13,9 +13,12 @@ if (gnuradio) {
   uint32_t rs2_val = RS2;
   const char *sendipaddr = p->get_osc_sendip();
   size_t osc_sendport = p->get_osc_sendport();
+  size_t osc_recvport = p->get_osc_recvport();
   UdpTransmitSocket transmitSocket( IpEndpointName(sendipaddr, osc_sendport ) );
+  UdpReceiveSocket recvSocket( IpEndpointName(sendipaddr, osc_recvport ) );
   char buffer[OUT_BUF_SIZE];
   osc::OutboundPacketStream p( buffer, OUT_BUF_SIZE );
+
   if (rs1_num > 0 && rs1_num <= nqregisters) {
     if (rs2_num == 0) {
       if (qimm6 >= 0 && qimm6 < nqubits) {
@@ -34,8 +37,27 @@ if (gnuradio) {
           << osc::EndBundle;
       }
     }
-  transmitSocket.Send( p.Data(), p.Size() );
   }
+
+  // send
+  transmitSocket.Send( p.Data(), p.Size() );
+
+  // recv(IO block!!)
+  IpEndpointName fromEndPoint;
+  int rlen = recvSocket.ReceiveFrom(fromEndPoint, buffer, OUT_BUF_SIZE);
+  osc::ReceivedPacket recvPacket(buffer, rlen);
+  osc::ReceivedMessage recvMessage(recvPacket);
+
+  // this is sample.
+  if (std::strcmp(recvMessage.AddressPattern(), "/Mz") == 0) {
+    osc::ReceivedMessageArgumentStream args = recvMessage.ArgumentStream();
+    osc::int32 a1;
+    float a2;
+    args >> a1 >> a2 >> osc::EndMessage;
+
+    fprintf(stderr, "qmeas.k from gnuradio result: %d, %f\n", a1, a2);
+  }
+
 }
 
 Qureg qubits = p->get_qubits();
